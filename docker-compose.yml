@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+#  consumer:
+#todo
+
+  publisher:
+    build:
+      context: ./PublisherService
+    environment:
+      RABBIT_HOST: rabbitmq
+      RABBIT_USER: admin
+      RABBIT_PASS: password
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.8.1-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  postgresdb:
+    image: postgres:12.0
+    container_name: postgresdb
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_DB: clew_medical
+      POSTGRES_PASSWORD: password
+      PGDATA: var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
