@@ -3,7 +3,7 @@ import asyncio
 import json
 import os
 
-from aio_pika import connect, ExchangeType, Message, DeliveryMode
+from aio_pika import connect_robust, ExchangeType, Message, DeliveryMode
 
 
 async def main(loop):
@@ -11,9 +11,8 @@ async def main(loop):
     await publish_events(exchange)
     await connection.close()
 
-
 async def setup_rabbitmq(loop):
-    connection = await connect(host=os.environ.get('RABBIT_HOST'),
+    connection = await connect_robust(host=os.environ.get('RABBIT_HOST'),
                                login=os.environ.get('RABBIT_USER'),
                                password=os.environ.get('RABBIT_PASS'),
                                loop=loop
@@ -23,8 +22,10 @@ async def setup_rabbitmq(loop):
     exchange = await channel.declare_exchange(
         "meds", ExchangeType.FANOUT
     )
-    queue = await channel.declare_queue(name='events', auto_delete=True)
+    # auto_delete deletes the queue after it is consumed, and consumer disconnects:
+    queue = await channel.declare_queue(name='events', auto_delete=True) 
 
+    # FANOUT ignores the routing_key="new.events" (but we name the exchange anyway because)
     await queue.bind(exchange, "new.events")
     return connection, exchange
 

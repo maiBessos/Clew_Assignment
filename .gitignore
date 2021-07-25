@@ -2,6 +2,17 @@
 # Created by https://www.toptal.com/developers/gitignore/api/flask,python,pycharm,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=flask,python,pycharm,windows
 
+# commit the .gitignore itself - might be useful
+#.gitignore
+
+## VScode:
+.vscode/launch.json 
+# ignore debugging environment environment variables (also included within docker compose, which will be commited anyway)
+*.env
+
+### temp (linux) files
+*~
+
 ### Flask ###
 instance/*
 !instance/.gitignore
@@ -350,4 +361,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/flask,python,pycharm,windows
+
 
